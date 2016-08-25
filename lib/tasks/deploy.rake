@@ -17,8 +17,10 @@ namespace :releaseme do
 
     if args[:environment] == "production"
       version_increase = 'none'
+      job_options["environment_to_deploy"] = args[:environment]
     elsif args[:environment] == "qa"
       version_increase = 'patch'
+      job_options["environment_to_deploy"] = args[:environment]
     end
 
     deployment_id = job_options["deployment_id"]
