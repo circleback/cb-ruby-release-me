@@ -7,7 +7,7 @@ require_relative 'releaseme/configuration'
 module ReleaseMe
 
 
-  def publish(config = ReleaseMe::Configuration.new)
+  def self.publish(config = ReleaseMe::Configuration.new)
 
 
     git_working_directory = config.git_working_directory
