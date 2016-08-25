@@ -6,7 +6,6 @@ require 'logger'
 
 module ReleaseMe
 
-
   def self.publish(config_opts  = {})
     logger = Logger.new(STDOUT)
     config = ReleaseMe::Configuration.new(config_opts)
@@ -31,7 +30,7 @@ module ReleaseMe
     end
 
     unless git_working_directory == :working_directory_not_set
-      git_mgr = ReleaseMe::Services::SourceManagers::GitManager.new(git_working_directory)
+      git_mgr = ::ReleaseMe::Services::SourceManagers::GitManager.new(git_working_directory)
       new_version = "v#{GVB.major_version(true)}.#{GVB.minor_version(true)}.#{GVB.patch_version(true)}"
 
       if git_mgr.tag_exists(old_version)
@@ -49,7 +48,7 @@ module ReleaseMe
     jira_username = config.issue_tracker_username
     jira_passwword = config.issue_tracker_password
 
-    tracker = ReleaseMe::Services::IssueTrackers::JiraTracker.new(jira_site_url, jira_username, jira_passwword)
+    tracker = ::ReleaseMe::Services::IssueTrackers::JiraTracker.new(jira_site_url, jira_username, jira_passwword)
 
     issues = tracker.get_issues(story_ids)
     output = ''
@@ -66,7 +65,7 @@ module ReleaseMe
     publisher_api_token = config.publisher_api_token
     unless publisher_api_token == :publisher_api_token_not_set
 
-      pub = ReleaseMe::Services::Publishers::HipChatPublisher.new(publisher_api_token)
+      pub = ::ReleaseMe::Services::Publishers::HipChatPublisher.new(publisher_api_token)
       env_to_deploy = config.env_to_deploy
 
       pub.publish_release(new_version, config.publisher_system_name,env_to_deploy,config.publisher_chat_room,issues)
