@@ -1,11 +1,12 @@
 PATH
   remote: .
   specs:
-    cb-releaseme (0.0.1)
+    cb-releaseme (0.0.2)
       git (~> 1.2.9.1)
       git-version-bump (~> 0.14.0)
       hipchat (~> 1.5)
       jira-ruby (~> 0.1.14)
+      rake
 
 GEM
   remote: https://rubygems.org/
@@ -55,7 +56,6 @@ PLATFORMS
 
 DEPENDENCIES
   cb-releaseme!
-  rake
   rspec (~> 3.0.0)
 
 BUNDLED WITH

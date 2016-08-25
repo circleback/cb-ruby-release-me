@@ -5,6 +5,34 @@ require 'logger'
 
 module ReleaseMe
 
+
+  # config_opts can contain global options for setup of ReleaseMe
+  # deployment_id = job_template_id for tower that you wish to start
+  #
+  #
+  #
+  def self.deploy_and_publish!(deployment_id, branch_name = :current, config_opts = {})
+
+    #logger = Logger.new(STDOUT)
+
+    config = ReleaseMe::Configuration.new(config_opts)
+
+    if branch_name == :current
+      branch_name = $1 if `git branch` =~ /\* (\S+)\s/m
+    end
+
+    tower_mgr = ReleaseMe::Services::DeploymentManagers::TowerManager.new(config.deployment_manager_site_url,config.deployment_manager_username, config.deployment_manager_password)
+
+    status = tower_mgr.start_job_from_template(deployment_id,{"git_branch" => branch_name, "ansible_user" => "ubuntu"})
+
+
+    if status == "successful"
+      ReleaseMe::publish(config)
+    end
+
+  end
+
+
   def self.publish(config_opts  = {})
     logger = Logger.new(STDOUT)
     config = ReleaseMe::Configuration.new(config_opts)
