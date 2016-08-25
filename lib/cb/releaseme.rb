@@ -7,8 +7,9 @@ require_relative 'releaseme/configuration'
 module ReleaseMe
 
 
-  def self.publish(config = ReleaseMe::Configuration.new)
+  def self.publish(config_opts  = {})
 
+    config = ReleaseMe::Configuration.new(config_opts)
 
     git_working_directory = config.git_working_directory
     version_increase = config.version_increase
