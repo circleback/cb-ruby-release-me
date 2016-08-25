@@ -2,13 +2,13 @@ require 'git-version-bump'
 #require 'git-version-bump/rake-tasks'
 Dir[File.join(__dir__, "services", "**", "*.rb")].each {|file| require file }
 require_relative 'releaseme/configuration'
-
+require 'logger'
 
 module ReleaseMe
 
 
   def self.publish(config_opts  = {})
-
+    logger = Logger.new(STDOUT)
     config = ReleaseMe::Configuration.new(config_opts)
 
     git_working_directory = config.git_working_directory
@@ -18,7 +18,7 @@ module ReleaseMe
     story_ids = []
 
     unless version_increase == 'none'
-      info "current version tag #{old_version}"
+      logger.info "current version tag #{old_version}"
       if version_increase == 'major'
         GVB.tag_version "#{GVB.major_version(true) + 1}.0.0"
       elsif version_increase == 'minor'
@@ -27,7 +27,7 @@ module ReleaseMe
         GVB.tag_version "#{GVB.major_version(true)}.#{GVB.minor_version(true)}.#{GVB.patch_version(true)+1}"
       end
 
-      info "version tag bumped to #{GVB.version(true)}"
+      logger.info "version tag bumped to #{GVB.version(true)}"
     end
 
     unless git_working_directory == :working_directory_not_set
@@ -36,10 +36,10 @@ module ReleaseMe
 
       if git_mgr.tag_exists(old_version)
         unless new_version == old_version
-          info "getting commits between #{old_version} and #{new_version}"
+          logger.info "getting commits between #{old_version} and #{new_version}"
           commits = git_mgr.get_commits(old_version, new_version) unless version_increase == 'none'
           story_ids = git_mgr.get_story_ids(commits)
-          info "story ids found for this release #{story_ids.length} stories"
+          logger.info "story ids found for this release #{story_ids.length} stories"
         end
       end
 
@@ -56,10 +56,10 @@ module ReleaseMe
     issues.each{|i| output << "#{i.id} - #{i.title}\n"  }
 
     if issues.length > 0
-      info " #{issues.length} issues loaded from JIRA"
-      info "**** RELEASE NOTES FOR #{new_version}*****"
-      info output
-      info "****** END RELEASE NOTES *********"
+      logger.info " #{issues.length} issues loaded from JIRA"
+      logger.info "**** RELEASE NOTES FOR #{new_version}*****"
+      logger.info output
+      logger.info "****** END RELEASE NOTES *********"
 
     end
 
