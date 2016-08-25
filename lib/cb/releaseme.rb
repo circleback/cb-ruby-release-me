@@ -1,6 +1,5 @@
 require 'git-version-bump'
-#require 'git-version-bump/rake-tasks'
-Dir[File.join(__dir__, "services", "**", "*.rb")].each {|file| require file }
+Dir[File.join(__dir__,"releaseme", "services", "**", "*.rb")].each {|file| require file }
 require_relative 'releaseme/configuration'
 require 'logger'
 
@@ -30,7 +29,7 @@ module ReleaseMe
     end
 
     unless git_working_directory == :working_directory_not_set
-      git_mgr = Services::SourceManagers::GitManager.new(git_working_directory)
+      git_mgr = ReleaseMe::Services::SourceManagers::GitManager.new(git_working_directory)
       new_version = "v#{GVB.major_version(true)}.#{GVB.minor_version(true)}.#{GVB.patch_version(true)}"
 
       if git_mgr.tag_exists(old_version)
