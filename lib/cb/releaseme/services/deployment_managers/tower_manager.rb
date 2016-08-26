@@ -70,6 +70,11 @@ module ReleaseMe
                   job_response = JSON.parse(job_response_string)
                   current_status = job_response["status"]
 
+                  if current_status == "failed"
+                    puts "ansible job failed"
+                    break
+                  end
+
                   puts "from #{tower_server_url}jobs/#{job_id} - JOB STATUS IS #{current_status}"
                   unless current_status == "successful"
                     20.times do |x|
