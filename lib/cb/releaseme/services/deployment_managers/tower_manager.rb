@@ -41,7 +41,7 @@ module ReleaseMe
 
             extra_vars_string.chomp!(',')
 
-            extra_vars_string + '}"'
+            extra_vars_string += '}"'
 
             outer_extra_vars = '{"extra_vars": ' + extra_vars_string  + '}'
 
@@ -52,8 +52,6 @@ module ReleaseMe
           if result
 
             job_launch_response = JSON.parse(job_launch_response_string)
-
-            puts "deployment of #{args[:environment]} environment from git branch #{branch} initialized"
 
             if  job_launch_response.has_key?("id")
               job_id = job_launch_response['id']
@@ -74,9 +72,13 @@ module ReleaseMe
 
                   puts "from #{tower_server_url}jobs/#{job_id} - JOB STATUS IS #{current_status}"
                   unless current_status == "successful"
-                    10.times do |x|
+                    20.times do |x|
                       print "."
-                      sleep 2
+                      if current_status == "waiting" || current_status == "pending"
+                        sleep 3
+                      else
+                        sleep 1
+                      end
                     end
                   end
 
@@ -91,6 +93,7 @@ module ReleaseMe
             end
           end
 
+          puts "final job status is set as #{current_status}"
 
           current_status
 

@@ -3,7 +3,7 @@
 Gem::Specification.new do |s|
   s.name        = 'cb-releaseme'
   s.license     = 'LICENSE.txt'
-  s.version     = '0.0.2'
+  s.version     = '0.0.3'
   s.date        = '2016-08-25'
   s.summary     = 'help coordinate and track releases with deployment'
   s.description = <<-EOS

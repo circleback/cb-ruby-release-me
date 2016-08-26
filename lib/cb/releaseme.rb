@@ -13,8 +13,6 @@ module ReleaseMe
   #
   def self.deploy_and_publish!(deployment_id, branch_name = :current, config_opts = {})
 
-    #logger = Logger.new(STDOUT)
-
     config = ReleaseMe::Configuration.new(config_opts)
 
     if branch_name == :current
@@ -25,9 +23,8 @@ module ReleaseMe
 
     status = tower_mgr.start_job_from_template(deployment_id,{"git_branch" => branch_name, "ansible_user" => "ubuntu"})
 
-
     if status == "successful"
-      ReleaseMe::publish(config)
+      ReleaseMe::publish(config_opts)
     end
 
   end

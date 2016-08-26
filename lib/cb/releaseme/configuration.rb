@@ -26,7 +26,7 @@ module ReleaseMe
       initial_config = ReleaseMe::Configuration::load_default_configuration
 
       initial_config.merge!(config_opts)
-      initial_config.each_pair{|k,v| instance_variable_set(:"@#{k}", v) if instance_variable_get(:"@#{k}") }
+      initial_config.each_pair{|k,v| instance_variable_set(:"@#{k}", v)  }
 
     end
 

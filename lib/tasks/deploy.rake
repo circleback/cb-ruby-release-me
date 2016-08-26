@@ -23,19 +23,13 @@ namespace :releaseme do
       job_options["environment_to_deploy"] = args[:environment]
     end
 
+
     deployment_id = job_options["deployment_id"]
     job_options["version_increase"] = version_increase unless job_options["version_increase"]
 
+    puts "about to deploy and publish current branch to #{args[:environment]}"
+
     ReleaseMe::deploy_and_publish!(deployment_id, :current, job_options)
-
-
-
-    #puts "I am in this task"
-    #puts "version increase passed in is #{version_increase} and environment is #{args[:environment]}"
-
-
-
-
 
   end
 end
