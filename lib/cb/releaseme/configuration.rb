@@ -15,17 +15,39 @@ module ReleaseMe
     attr :publisher_api_token
     attr :publisher_chat_room
     attr :publisher_system_name
-    attr :env_to_deploy
+    attr :environment_to_deploy
 
     attr :deployment_manager_site_url
     attr :deployment_manager_username
     attr :deployment_manager_password
 
-    def initialize(config_opts = {})
+    def initialize(config_opts = {}, *key_value_args)
 
       initial_config = ReleaseMe::Configuration::load_default_configuration
-
       initial_config.merge!(config_opts)
+
+      has_version_increase_key = config_opts.has_key?("version_increase")
+
+      key_value_args.each do |a|
+        key_value = a.split("=")
+        if key_value.length == 2
+          if key_value.first == "version_increase"
+            has_version_increase_key = true
+          end
+          initial_config[key_value.first] = key_value.last
+        end
+      end
+
+      unless has_version_increase_key
+
+        if initial_config['environment_to_deploy'] == 'qa'
+          initial_config['version_increase'] = 'patch'
+        elsif initial_config['environment_to_deploy'] == 'production'
+          initial_config['version_increase'] = 'none'
+        end
+
+      end
+
       initial_config.each_pair{|k,v| instance_variable_set(:"@#{k}", v)  }
 
     end
@@ -50,7 +72,7 @@ module ReleaseMe
       config[:publisher_api_token]=  :publisher_api_token_not_set
       config[:publisher_chat_room]=  :publisher_chat_room_not_set
       config[:publisher_system_name]=  :publisher_system_name_not_set
-      config[:env_to_deploy]= ENV['rack_env']
+      config[:environment_to_deploy]= ENV['rack_env']
 
       config[:deployment_manager_site_url] = 'https://tower.ops.circleback.com/api/v1/'
       config[:deployment_manager_username] = ENV['ANSIBLE_TOWER_USER']

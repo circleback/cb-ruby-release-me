@@ -6,14 +6,12 @@ require 'logger'
 module ReleaseMe
 
 
-  # config_opts can contain global options for setup of ReleaseMe
+  # pass ing config object which can be formed passing in hash and splat of key=val items
   # deployment_id = job_template_id for tower that you wish to start
   #
   #
   #
-  def self.deploy_and_publish!(deployment_id, branch_name = :current, config_opts = {})
-
-    config = ReleaseMe::Configuration.new(config_opts)
+  def self.deploy_and_publish!(deployment_id, config, branch_name = :current)
 
     if branch_name == :current
       branch_name = $1 if `git branch` =~ /\* (\S+)\s/m
@@ -23,16 +21,13 @@ module ReleaseMe
 
     status = tower_mgr.start_job_from_template(deployment_id,{"git_branch" => branch_name, "ansible_user" => "ubuntu"})
 
-    if status == "successful"
-      ReleaseMe::publish(config_opts)
-    end
+    ReleaseMe::publish(config) if status == "successful"
 
   end
 
 
-  def self.publish(config_opts  = {})
+  def self.publish(config)
     logger = Logger.new(STDOUT)
-    config = ReleaseMe::Configuration.new(config_opts)
 
     git_working_directory = config.git_working_directory
     version_increase = config.version_increase
@@ -90,15 +85,11 @@ module ReleaseMe
     unless publisher_api_token == :publisher_api_token_not_set
 
       pub = ReleaseMe::Services::Publishers::HipChatPublisher.new(publisher_api_token)
-      env_to_deploy = config.env_to_deploy
+      env_to_deploy = config.environment_to_deploy
 
       pub.publish_release(new_version, config.publisher_system_name,env_to_deploy,config.publisher_chat_room,issues)
 
     end
-
-
-
-
 
   end
 
