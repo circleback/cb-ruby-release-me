@@ -14,9 +14,9 @@ describe ReleaseMe::Configuration do
         ReleaseMe::Configuration.new
       end
       it 'is Configuration with defaults loaded' do
-        expect(config.publisher_api_token).to eq :publisher_api_token_not_set
           expect(config.issue_tracker).to eq :jira
           expect(config.source_manager).to eq :git
+          expect(config.publishers).to contain_exactly(:hipchat,:datadog)
       end
 
 
@@ -118,6 +118,36 @@ describe ReleaseMe::Configuration do
 
       end
 
+      context 'with key starting with publishers.' do
+        let(:opts) do
+          { 'publishers.hipchat.api_token' => '12345', 'publishers.hipchat.chat_room' => 'chat room', 'publisher_system_name' => 'System name to deploy'}
+        end
+
+        subject(:publishers_config) { config.publishers_config }
+
+        it 'is a hash'do
+          expect(publishers_config).to be_a(Hash)
+        end
+
+        it 'has key of :hipchat with value of hash' do
+          expect(publishers_config.has_key?(:hipchat)).to be true
+          expect(publishers_config[:hipchat]).to be_a Hash
+
+        end
+
+        it 'has hash with :api_token key and value 12345' do
+          expect(publishers_config[:hipchat][:api_token]).to eq '12345'
+        end
+
+        it 'has hash with :chat_room key and value chat room' do
+          expect(publishers_config[:hipchat][:chat_room]).to eq 'chat room'
+        end
+
+        it 'has top level config of .publisher_system_name' do
+          expect(config.publisher_system_name).to eq 'System name to deploy'
+        end
+
+      end
 
     end
 

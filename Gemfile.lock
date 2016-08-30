@@ -1,7 +1,8 @@
 PATH
   remote: .
   specs:
-    cb-releaseme (0.0.6)
+    cb-releaseme (0.1.0)
+      dogstatsd-ruby (~> 1.6.0)
       git (~> 1.2.9.1)
       git-version-bump (~> 0.14.0)
       hipchat (~> 1.5)
@@ -20,6 +21,7 @@ GEM
       timers (~> 4.0.0)
     coderay (1.1.1)
     diff-lcs (1.2.5)
+    dogstatsd-ruby (1.6.0)
     ffi (1.9.14)
     formatador (0.2.5)
     git (1.2.9.1)
