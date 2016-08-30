@@ -14,7 +14,7 @@ module ReleaseMe
 
         def publish_release(release_version, system_name, env)
 
-          @client.event(release_version, "#{system_name} #{release_version} is deployed to #{env}", :build_env => env, :build_ver => release_version, :build_system => system_name)
+          @client.event(release_version, "#{system_name} #{release_version} is deployed to #{env}", :tags=>[system_name,env])
 
         end
 

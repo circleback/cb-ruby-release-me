@@ -81,11 +81,13 @@ module ReleaseMe
 
     end
 
+    logger.info "going to publish to #{config.publishers.inspect} publishers"
+
     config.publishers.each do |publisher|
 
       if publisher == :hipchat
         unless config.publishers_config[publisher][:api_token] == :publisher_api_token_not_set
-
+          logger.info "publishing release info to hipchat"
           pub = ReleaseMe::Services::Publishers::HipChatPublisher.new(config.publishers_config[publisher][:api_token])
           env_to_deploy = config.environment_to_deploy
 
@@ -93,6 +95,7 @@ module ReleaseMe
 
         end
       elsif publisher == :datadog
+        logger.info "publishing event to datadog"
         #broadcast build announcement with tag , which is in variable new_version
         events = ReleaseMe::Services::Publishers::DatadogPublisher.new
         events.publish_release(new_version,config.publisher_system_name,config.environment_to_deploy)

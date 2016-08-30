@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    cb-releaseme (0.1.0)
+    cb-releaseme (0.1.1)
       dogstatsd-ruby (~> 1.6.0)
       git (~> 1.2.9.1)
       git-version-bump (~> 0.14.0)
