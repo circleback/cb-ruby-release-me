@@ -32,7 +32,7 @@ module ReleaseMe
 
       events = ReleaseMe::Services::Publishers::DatadogPublisher.new(api_key)
 
-      tags << config.environment_to_deploy
+      tags << "environment:#{config.environment_to_deploy}"
 
       events.publish_event(event_title,event_description,tags)
     end
