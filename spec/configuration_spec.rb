@@ -120,7 +120,10 @@ describe ReleaseMe::Configuration do
 
       context 'with key starting with publishers.' do
         let(:opts) do
-          { 'publishers.hipchat.api_token' => '12345', 'publishers.hipchat.chat_room' => 'chat room', 'publisher_system_name' => 'System name to deploy'}
+          { 'publishers.hipchat.api_token' => '12345', 'publishers.hipchat.chat_room' => 'chat room',
+            'publisher_system_name' => 'System name to deploy',
+            'publishers.datadog.api_key' => '67890'
+          }
         end
 
         subject(:publishers_config) { config.publishers_config }
@@ -132,7 +135,6 @@ describe ReleaseMe::Configuration do
         it 'has key of :hipchat with value of hash' do
           expect(publishers_config.has_key?(:hipchat)).to be true
           expect(publishers_config[:hipchat]).to be_a Hash
-
         end
 
         it 'has hash with :api_token key and value 12345' do
@@ -145,6 +147,15 @@ describe ReleaseMe::Configuration do
 
         it 'has top level config of .publisher_system_name' do
           expect(config.publisher_system_name).to eq 'System name to deploy'
+        end
+
+        it 'has key of :datadog with value of hash' do
+          expect(publishers_config.has_key?(:datadog)).to be true
+          expect(publishers_config[:datadog]).to be_a Hash
+        end
+
+        it 'has hash with :api_key key and value 67890' do
+          expect(publishers_config[:datadog][:api_key]).to eq '67890'
         end
 
       end

@@ -2,7 +2,7 @@
 Gem::Specification.new do |s|
   s.name        = 'cb-releaseme'
   s.license     = 'LICENSE.txt'
-  s.version     = '0.1.1'
+  s.version     = '0.1.2'
   s.date        = '2016-08-25'
   s.summary     = 'help coordinate and track releases with deployment'
   s.description = <<-EOS
@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'git-version-bump', '~> 0.14.0'
   s.add_dependency 'hipchat', '~> 1.5'
   s.add_dependency 'dogstatsd-ruby', '~> 1.6.0'
+  s.add_dependency 'httparty', '~> 0.14'
   s.add_development_dependency 'rspec', '~> 3.0.0'
   s.add_development_dependency 'guard'
   s.add_development_dependency 'guard-rspec'
