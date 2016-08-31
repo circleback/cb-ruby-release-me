@@ -25,6 +25,20 @@ module ReleaseMe
 
   end
 
+  def self.publish_event(config, event_title, event_description, tags = [])
+
+    if config.publishers_config[:datadog].has_key?(:api_key)
+      api_key = config.publishers_config[:datadog][:api_key]
+      logger.info "publishing custom event to datadog"
+      events = ReleaseMe::Services::Publishers::DatadogPublisher.new(api_key)
+
+      tags << config.environment_to_deploy
+
+      events.publish_event(event_title,event_description,tags)
+    end
+
+
+  end
 
   def self.publish(config)
     logger = Logger.new(STDOUT)
@@ -95,10 +109,15 @@ module ReleaseMe
 
         end
       elsif publisher == :datadog
-        logger.info "publishing event to datadog"
+
         #broadcast build announcement with tag , which is in variable new_version
-        events = ReleaseMe::Services::Publishers::DatadogPublisher.new
-        events.publish_release(new_version,config.publisher_system_name,config.environment_to_deploy)
+        if config.publishers_config[publisher].has_key?(:api_key)
+          api_key = config.publishers_config[publisher][:api_key]
+          logger.info "publishing event to datadog"
+          events = ReleaseMe::Services::Publishers::DatadogPublisher.new(api_key)
+          events.publish_release(new_version,config.publisher_system_name,config.environment_to_deploy)
+        end
+
       end
 
     end
