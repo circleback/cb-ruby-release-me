@@ -29,7 +29,7 @@ module ReleaseMe
 
     if config.publishers_config[:datadog].has_key?(:api_key)
       api_key = config.publishers_config[:datadog][:api_key]
-      logger.info "publishing custom event to datadog"
+
       events = ReleaseMe::Services::Publishers::DatadogPublisher.new(api_key)
 
       tags << config.environment_to_deploy
