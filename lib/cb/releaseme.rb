@@ -19,7 +19,11 @@ module ReleaseMe
 
     tower_mgr = ReleaseMe::Services::DeploymentManagers::TowerManager.new(config.deployment_manager_site_url,config.deployment_manager_username, config.deployment_manager_password)
 
-    status = tower_mgr.start_job_from_template(deployment_id,{"git_branch" => branch_name, "ansible_user" => "ubuntu"})
+    job_opts = {"git_branch" => branch_name, "ansible_user" => "ubuntu"}
+
+    job_opts.merge!(config.deployment_manager_options)
+
+    status = tower_mgr.start_job_from_template(deployment_id,job_opts)
 
     ReleaseMe::publish(config) if status == "successful"
 

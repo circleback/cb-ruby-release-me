@@ -21,6 +21,7 @@ module ReleaseMe
     attr :deployment_manager_site_url
     attr :deployment_manager_username
     attr :deployment_manager_password
+    attr :deployment_manager_options
 
     def initialize(config_opts = {}, *key_value_args)
 
@@ -41,8 +42,15 @@ module ReleaseMe
           end
 
           keys_to_remove << k
+        elsif k =~ /^deployment_manager\.options/
 
+          initial_config[:deployment_manager_options] = v
+
+          keys_to_remove << k
         end
+
+
+
       end
 
       config_opts.delete_if{|k| keys_to_remove.include?(k) }

@@ -160,6 +160,33 @@ describe ReleaseMe::Configuration do
 
       end
 
+
+      context 'with key starting with deployment_manager.options' do
+        let(:opts) do
+          { 'publishers.hipchat.api_token' => '12345', 'publishers.hipchat.chat_room' => 'chat room',
+            'publisher_system_name' => 'System name to deploy',
+            'deployment_manager.options' => {'option_key' => 'option_value', 'another_option' => 'value_2' }
+          }
+        end
+
+        subject(:deployment_options) { config.deployment_manager_options }
+
+        it 'is a hash'do
+          expect(deployment_options).to be_a(Hash)
+        end
+
+        it 'has key of option_key with value of hash' do
+          expect(deployment_options.has_key?(:option_key.to_s)).to be true
+          expect(deployment_options[:option_key.to_s]).to eq 'option_value'
+        end
+
+        it 'has hash with another_option key and value value_2' do
+          expect(deployment_options[:another_option.to_s]).to eq 'value_2'
+        end
+
+
+      end
+
     end
 
 
