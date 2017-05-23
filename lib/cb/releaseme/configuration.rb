@@ -109,10 +109,11 @@ module ReleaseMe
      # config[:publisher_chat_room]=  :publisher_chat_room_not_set
      # config[:publisher_system_name]=  :publisher_system_name_not_set
 
-      config[:publishers]=  [:hipchat,:datadog]
+      config[:publishers]=  [:hipchat,:datadog, :jira]
       hipchat_config = {:api_token => :publisher_api_token_not_set , :chat_room => :publisher_chat_room_not_set, :system_name => :publisher_system_name_not_set}
       datadog_config = {}
-      config[:publishers_config]  = {:hipchat => hipchat_config, :datadog => datadog_config}
+      jira_config = {}
+      config[:publishers_config]  = {:hipchat => hipchat_config, :datadog => datadog_config, :jira => jira_config}
 
 
 

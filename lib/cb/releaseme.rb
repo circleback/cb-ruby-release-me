@@ -23,9 +23,11 @@ module ReleaseMe
 
     job_opts.merge!(config.deployment_manager_options)
 
+    tag_info = ReleaseMe::tag_version(config)
+
     status = tower_mgr.start_job_from_template(deployment_id,job_opts)
 
-    ReleaseMe::publish(config) if status == "successful"
+    ReleaseMe::publish(config, tag_info) if status == "successful"
 
   end
 
@@ -44,14 +46,12 @@ module ReleaseMe
 
   end
 
-  def self.publish(config)
+  # return a Hash with new_version, old_version
+  def self.tag_version(config)
     logger = Logger.new(STDOUT)
-
-    git_working_directory = config.git_working_directory
     version_increase = config.version_increase
 
     old_version = "v#{GVB.major_version(true)}.#{GVB.minor_version(true)}.#{GVB.patch_version(true)}"
-    story_ids = []
 
     unless version_increase == 'none'
       logger.info "current version tag #{old_version}"
@@ -66,17 +66,45 @@ module ReleaseMe
       logger.info "version tag bumped to #{GVB.version(true)}"
     end
 
+    if version_increase == 'none'
+      new_version = old_version
+    else
+      new_version = "v#{GVB.major_version(true)}.#{GVB.minor_version(true)}.#{GVB.patch_version(true)}"
+    end
+
+
+    {:old_version => old_version, :new_version => new_version}
+
+  end
+
+  def self.publish(config, tag_info)
+    logger = Logger.new(STDOUT)
+
+    git_working_directory = config.git_working_directory
+    version_increase = config.version_increase
+
+    old_version = tag_info[:old_version]
+    story_ids = []
+
     unless git_working_directory == :working_directory_not_set
       git_mgr = ReleaseMe::Services::SourceManagers::GitManager.new(git_working_directory)
-      new_version = "v#{GVB.major_version(true)}.#{GVB.minor_version(true)}.#{GVB.patch_version(true)}"
+      new_version = tag_info[:new_version]
 
       if git_mgr.tag_exists(old_version)
-        unless new_version == old_version
+        if new_version == old_version
+          if config.environment_to_deploy == 'production'
+            recent_tags = `git tag --sort -v:refname | head -2`.split("\n")
+            commits = git_mgr.get_commits(recent_tags[1], recent_tags[0])
+            story_ids = git_mgr.get_story_ids(commits)
+            logger.info "story ids found for this production release #{story_ids.length} stories"
+          end
+        else
           logger.info "getting commits between #{old_version} and #{new_version}"
           commits = git_mgr.get_commits(old_version, new_version) unless version_increase == 'none'
           story_ids = git_mgr.get_story_ids(commits)
           logger.info "story ids found for this release #{story_ids.length} stories"
         end
+
       end
 
     end
@@ -112,6 +140,10 @@ module ReleaseMe
           pub.publish_release(new_version, config.publisher_system_name,env_to_deploy,config.publishers_config[publisher][:chat_room],issues)
 
         end
+      elsif publisher == :jira
+        logger.info 'publishing release comments to JIRA stories'
+        pub = ReleaseMe::Services::Publishers::JiraPublisher.new(tracker)
+        pub.publish_release(new_version,config.environment_to_deploy,issues)
       elsif publisher == :datadog
 
         #broadcast build announcement with tag , which is in variable new_version

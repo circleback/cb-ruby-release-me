@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    cb-releaseme (0.1.6)
+    cb-releaseme (0.2.0)
       dogstatsd-ruby (~> 1.6.0)
       git (~> 1.2.9.1)
       git-version-bump (~> 0.14.0)
@@ -20,7 +20,7 @@ GEM
     celluloid (0.16.0)
       timers (~> 4.0.0)
     coderay (1.1.1)
-    concurrent-ruby (1.0.4)
+    concurrent-ruby (1.0.5)
     diff-lcs (1.2.5)
     dogstatsd-ruby (1.6.0)
     ffi (1.9.14)
@@ -56,7 +56,7 @@ GEM
     lumberjack (1.0.10)
     method_source (0.8.2)
     mimemagic (0.3.2)
-    minitest (5.10.1)
+    minitest (5.10.2)
     multi_xml (0.6.0)
     nenv (0.2.0)
     notiffany (0.0.6)
@@ -88,7 +88,7 @@ GEM
     thread_safe (0.3.6)
     timers (4.0.4)
       hitimes
-    tzinfo (1.2.2)
+    tzinfo (1.2.3)
       thread_safe (~> 0.1)
 
 PLATFORMS

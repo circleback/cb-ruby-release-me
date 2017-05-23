@@ -17,6 +17,13 @@ module ReleaseMe
 
         end
 
+        def add_deployment_comment(issue_id, version_tag)
+          comment = "deployed to production with version #{version_tag}"
+          issue = @client.Issue.find(issue_id)
+          issue_comment = issue.comments.build
+          issue_comment.save body: comment
+        end
+
         def get_issues(issue_ids)
 
           issues = []
