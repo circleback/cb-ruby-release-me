@@ -94,7 +94,19 @@ module ReleaseMe
         if new_version == old_version
           if config.environment_to_deploy == 'production'
             recent_tags = `git tag --sort -v:refname | head -2`.split("\n")
-            commits = git_mgr.get_commits(recent_tags[1], recent_tags[0])
+
+            file_name = "#{config.publisher_system_name.gsub(/\s/, '_')}_#{config.environment_to_deploy}.txt".downcase
+
+            deployment_path = File.join(__dir__,"releaseme", "builds",file_name)
+            if File.exists?(deployment_path)
+              previous_tag = IO.readlines(deployment_path).first
+            else
+              previous_tag = recent_tags[1]
+            end
+
+            File.write(deployment_path, recent_tags[0])
+
+            commits = git_mgr.get_commits(previous_tag, recent_tags[0])
             story_ids = git_mgr.get_story_ids(commits)
             logger.info "story ids found for this production release #{story_ids.length} stories"
           end
