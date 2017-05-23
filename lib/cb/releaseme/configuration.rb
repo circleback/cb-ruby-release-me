@@ -113,8 +113,8 @@ module ReleaseMe
       hipchat_config = {:api_token => :publisher_api_token_not_set , :chat_room => :publisher_chat_room_not_set, :system_name => :publisher_system_name_not_set}
       datadog_config = {}
       jira_config = {}
-      config[:publishers_config]  = {:hipchat => hipchat_config, :datadog => datadog_config, :jira => jira_config}
-
+      config[:publishers_config]  = {:hipchat => hipchat_config, :datadog => datadog_config}
+      config[:deployment_manager_options] = {}
 
 
       config[:environment_to_deploy]= ENV['rack_env']
